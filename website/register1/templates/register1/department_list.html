@@ -1,0 +1,150 @@
+{% extends "register1/base.html" %}
+
+{% block title %}Department Overview - Health Check{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="welcome-section text-center mb-5">
+        <h2 class="display-4">Department Overview</h2>
+        <p class="lead text-muted">View all departments and their members</p>
+    </div>
+
+    {% for department in departments %}
+    <div class="card mb-4">
+        <div class="card-header bg-white border-bottom-0 pt-4 px-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">{{ department.name }}</h3>
+                <span class="badge bg-gradient rounded-pill">{{ department.members.count }} Members</span>
+            </div>
+        </div>
+        <div class="card-body p-4">
+            {% if department.description %}
+            <p class="text-muted mb-4">{{ department.description }}</p>
+            {% endif %}
+            
+            <h5 class="mb-3">
+                <i class="fas fa-users me-2"></i>
+                Team Members
+            </h5>
+            
+            {% if department.members.all %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for person in department.members.all %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-circle me-3">
+                                        {{ person.username|make_list|first|upper }}
+                                    </div>
+                                    {{ person.username }}
+                                </div>
+                            </td>
+                            <td>{{ person.job_title }}</td>
+                            <td>
+                                <span class="badge bg-success">Active</span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                No members in this team yet.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <div class="alert alert-info text-center">
+        <i class="fas fa-info-circle me-2"></i>
+        No departments have been created yet.
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+.card {
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.bg-gradient {
+    background: linear-gradient(to right, #ee8712, #f00c0c);
+    color: white;
+    padding: 0.5rem 1rem;
+}
+
+.avatar-circle {
+    width: 35px;
+    height: 35px;
+    background: linear-gradient(to right, #ee8712, #f00c0c);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table th {
+    border-top: none;
+    color: #495057;
+    font-weight: 600;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.badge {
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+}
+
+.badge.bg-success {
+    background-color: #28a745 !important;
+}
+
+.alert {
+    border: none;
+    border-radius: 1rem;
+}
+
+.welcome-section {
+    margin-bottom: 2rem;
+}
+
+.welcome-section h2 {
+    color: #212529;
+    margin-bottom: 0.5rem;
+}
+
+.welcome-section p {
+    color: #6c757d;
+}
+
+.dashboard {
+    padding: 2rem 0;
+}
+</style>
+
+<!-- Add Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+{% endblock %} 

@@ -1,0 +1,231 @@
+{% extends "register1/base.html" %}
+
+{% block title %}Settings - Health Check{% endblock %}
+
+{% block content %}
+<div class="content-box">
+    <div class="gradient-header">
+        <h2>Profile Information</h2>
+    </div>
+    <div class="box-content">
+        <div class="card">
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <h2 class="mb-0">Settings</h2>
+                </div>
+
+                <div class="profile-header">
+                    <h2 class="mb-2">{{ user.username }}</h2>
+                    <p class="text-muted">Manage your account details</p>
+                </div>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <div class="profile-details">
+                    <h4 class="mb-3">User Details</h4>
+                    <div class="detail-row">
+                        <span class="detail-label">Username:</span>
+                        <span class="detail-value" id="username-value">{{ user.username }}</span>
+                        <i class="fas fa-pencil-alt edit-icon" onclick="toggleEdit('username')"></i>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Email:</span>
+                        <span class="detail-value" id="email-value">{{ user.email }}</span>
+                        <i class="fas fa-pencil-alt edit-icon" onclick="toggleEdit('email')"></i>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Password:</span>
+                        <span class="detail-value" id="password-value">********</span>
+                        <i class="fas fa-pencil-alt edit-icon" onclick="toggleEdit('password')"></i>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Role:</span>
+                        <span class="detail-value">{{ user.groups.all.0.name|default:"Engineer" }}</span>
+                    </div>
+                </div>
+
+                <form method="POST" id="profile-form" class="mt-4">
+                    {% csrf_token %}
+                    <div class="form-group" id="username-input" style="display: none;">
+                        <label for="username">Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" required>
+                        </div>
+                    </div>
+                    <div class="form-group" id="email-input" style="display: none;">
+                        <label for="email">Email</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+                        </div>
+                    </div>
+                    <div class="form-group" id="password-input" style="display: none;">
+                        <label for="new_password">New Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                            <input type="password" class="form-control" id="new_password" name="new_password" placeholder="Enter new password">
+                        </div>
+                    </div>
+                    <div class="password-confirmation" id="password-confirmation">
+                        <div class="form-group">
+                            <label for="current_password">Confirm Current Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-key"></i></span>
+                                <input type="password" class="form-control" id="current_password" name="current_password" placeholder="Enter your current password" required>
+                            </div>
+                        </div>
+                        <div class="text-end mt-3">
+                            <button type="button" class="btn glass-button" onclick="submitForm()">Submit Changes</button>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="javascript:history.back()" class="btn glass-button">
+                            <i class="fas fa-arrow-left"></i> Return
+                        </a>
+                        <button type="button" class="btn glass-button" onclick="showPasswordConfirmation()">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    border-radius: 1rem;
+}
+
+.detail-row {
+    display: flex;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #495057;
+    flex: 1;
+}
+
+.detail-value {
+    flex: 2;
+    color: #212529;
+}
+
+.edit-icon {
+    color: #ee8712;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: color 0.2s;
+}
+
+.edit-icon:hover {
+    color: #f00c0c;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.input-group-text {
+    background-color: #f8f9fa;
+    border-right: none;
+}
+
+.form-control {
+    border-left: none;
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: #ced4da;
+}
+
+.password-confirmation {
+    display: none;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+}
+
+.alert {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.password-confirmation .alert {
+    margin-top: 1rem;
+}
+</style>
+
+<script>
+let isEditing = {};
+
+function toggleEdit(field) {
+    const valueElement = document.getElementById(`${field}-value`);
+    const inputElement = document.getElementById(`${field}-input`);
+    
+    if (isEditing[field]) {
+        if (field !== 'password') {
+            valueElement.textContent = document.getElementById(field === 'password' ? 'new_password' : field).value || valueElement.textContent;
+        }
+        valueElement.style.display = 'block';
+        inputElement.style.display = 'none';
+    } else {
+        valueElement.style.display = 'none';
+        inputElement.style.display = 'block';
+    }
+    
+    isEditing[field] = !isEditing[field];
+}
+
+function showPasswordConfirmation() {
+    // Check if any changes were made
+    const username = document.getElementById('username');
+    const email = document.getElementById('email');
+    const newPassword = document.getElementById('new_password');
+    
+    if (!username.value && !email.value && !newPassword.value) {
+        alert('No changes were made to save.');
+        return;
+    }
+    
+    // Show the password confirmation section
+    const passwordConfirmation = document.getElementById('password-confirmation');
+    passwordConfirmation.style.display = 'block';
+    
+    // Focus on the password input
+    document.getElementById('current_password').focus();
+}
+
+function submitForm() {
+    const currentPassword = document.getElementById('current_password');
+    
+    if (!currentPassword.value) {
+        alert('Please enter your current password to save changes.');
+        return;
+    }
+    
+    document.getElementById('profile-form').submit();
+}
+</script>
+{% endblock %}

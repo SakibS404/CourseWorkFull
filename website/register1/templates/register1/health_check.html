@@ -1,0 +1,176 @@
+{% extends "register1/base.html" %}
+
+{% block title %}Health Check Summary{% endblock %}
+
+{% block content %}
+<div class="content-box">
+    <div class="gradient-header">
+        <h2>Health Check Results</h2>
+    </div>
+    <div class="box-content">
+        <div class="container mt-4">
+            {% if error_message %}
+                <div class="alert alert-warning">
+                    <h4 class="alert-heading">Notice</h4>
+                    <p>{{ error_message }}</p>
+                    {% if not user.team_memberships.exists %}
+                        <hr>
+                        <p class="mb-0">Please ensure you are assigned to a team to view health check results.</p>
+                    {% endif %}
+                </div>
+            {% else %}
+                <div class="summary-info mb-4">
+                    <h3 class="summary-title">Health Check Summary</h3>
+                    <div class="summary-details">
+                        <span>Date: {{ today|date:"F d, Y" }}</span>
+                        {% if team %}
+                            <span class="ms-4">Team: {{ team.name }}</span>
+                        {% endif %}
+                        {% if team_members_count %}
+                            <span class="ms-4">Team Members: {{ team_members_count }}</span>
+                        {% endif %}
+                        <span class="ms-4">Votes Submitted: {{ votes_submitted }}</span>
+                    </div>
+                </div>
+
+                {% if not votes_submitted %}
+                    <div class="alert alert-info">
+                        <h4 class="alert-heading">No Health Check Data</h4>
+                        <p>No health check data has been recorded for today. Team members need to submit their votes.</p>
+                        <hr>
+                        <p class="mb-0">
+                            <a href="{% url 'vote' %}" class="btn btn-primary">Submit Your Vote</a>
+                        </p>
+                    </div>
+                {% else %}
+                    <div class="row" id="charts-container">
+                        <!-- Charts will be populated here by JavaScript -->
+                    </div>
+
+                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                    <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        try {
+                            const voteStats = JSON.parse('{{ vote_stats|escapejs }}');
+                            const container = document.getElementById('charts-container');
+                            
+                            Object.entries(voteStats).forEach(([category, data], index) => {
+                                // Create card for each category
+                                const cardDiv = document.createElement('div');
+                                cardDiv.className = 'col-md-4 mb-4';
+                                cardDiv.innerHTML = `
+                                    <div class="card">
+                                        <div class="gradient-header">
+                                            <h3 class="mb-0">${data.display_name}</h3>
+                                            <p class="text-light mb-0 mt-1">
+                                                Responses: ${data.total_votes} / {{ team_members_count }}
+                                            </p>
+                                        </div>
+                                        <div class="card-body chart-container p-3">
+                                            <canvas id="chart_${index}"></canvas>
+                                        </div>
+                                    </div>
+                                `;
+                                container.appendChild(cardDiv);
+
+                                // Create chart
+                                const ctx = document.getElementById(`chart_${index}`).getContext('2d');
+                                new Chart(ctx, {
+                                    type: 'pie',
+                                    data: {
+                                        labels: ['Green', 'Amber', 'Red'],
+                                        datasets: [{
+                                            data: data.data,
+                                            backgroundColor: [
+                                                '#28a745',
+                                                '#ffc107',
+                                                '#dc3545'
+                                            ],
+                                            borderWidth: 1
+                                        }]
+                                    },
+                                    options: {
+                                        responsive: true,
+                                        maintainAspectRatio: false,
+                                        plugins: {
+                                            legend: {
+                                                position: 'bottom',
+                                                labels: {
+                                                    padding: 20,
+                                                    font: { size: 12 }
+                                                }
+                                            },
+                                            tooltip: {
+                                                callbacks: {
+                                                    label: function(context) {
+                                                        const value = context.raw;
+                                                        const total = data.total_votes;
+                                                        const percentage = total > 0 ? 
+                                                            ((value / total) * 100).toFixed(1) : 0;
+                                                        return `${context.label}: ${value} (${percentage}%)`;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                });
+                            });
+                        } catch (error) {
+                            console.error('Error initializing charts:', error);
+                        }
+                    });
+                    </script>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.content-box {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin: 20px;
+}
+
+.gradient-header {
+    background: linear-gradient(45deg, #ff6b6b, #556270);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px 8px 0 0;
+}
+
+.box-content {
+    padding: 20px;
+}
+
+.summary-info {
+    padding: 0 0 20px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.summary-title {
+    font-size: 1.3rem;
+    color: #2c3e50;
+    margin-bottom: 8px;
+}
+
+.summary-details {
+    color: #5a6776;
+    font-size: 0.95rem;
+}
+
+.card {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.chart-container {
+    height: 300px;
+    position: relative;
+}
+</style>
+{% endblock %}

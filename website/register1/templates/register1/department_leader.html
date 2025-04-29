@@ -1,0 +1,47 @@
+{% extends "register1/base.html" %}
+
+{% block title %}Department Leader Dashboard - Health Check{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="card gradient-card">
+                <div class="card-header">
+                    <h2 class="mb-0">Welcome, {{ user.username }}</h2>
+                </div>
+                <div class="card-body">
+                    <ul class="feature-list">
+                        <li><strong>Health Check</strong> - Submit your weekly department health assessment</li>
+                        <li><strong>Departments</strong> - View and manage department information</li>
+                        <li><strong>Settings</strong> - Manage your account settings</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.feature-list li {
+    padding: 1rem 0;
+    border-bottom: 1px solid #eee;
+    color: #495057;
+}
+
+.feature-list li:last-child {
+    border-bottom: none;
+}
+
+.feature-list strong {
+    color: #212529;
+    margin-right: 0.5rem;
+}
+</style>
+{% endblock %}

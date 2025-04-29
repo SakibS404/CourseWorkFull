@@ -1,0 +1,117 @@
+{% extends "register1/base.html" %}
+
+{% block title %}Team Overview - Health Check{% endblock %}
+
+{% block content %}
+<div class="content-box">
+    <div class="gradient-header">
+        <h2>Team Overview</h2>
+    </div>
+    <div class="box-content">
+        <div class="team-info mb-4">
+            <h3 class="department-name">{{ department.name }}</h3>
+            <p class="department-details">Department Code: {{ department.department_code }}</p>
+        </div>
+
+        <div class="team-members">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Role</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for member in team_members %}
+                        <tr>
+                            <td>{{ member.user.get_full_name|default:member.user.username }}</td>
+                            <td>{{ member.job_title|title }}</td>
+                            <td>{{ member.username }}</td>
+                            <td>{{ member.user.email }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center">No team members found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Team Info Styles */
+.team-info {
+    padding: 20px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.department-name {
+    font-size: 1.4rem;
+    color: #2c3e50;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.department-details {
+    color: #5a6776;
+    font-size: 1rem;
+    margin-bottom: 0;
+}
+
+/* Table Styles */
+.table {
+    margin-top: 1rem;
+    background-color: white;
+}
+
+.table thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    color: #495057;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 12px 16px;
+}
+
+.table tbody td {
+    padding: 12px 16px;
+    vertical-align: middle;
+    color: #2c3e50;
+    font-size: 0.95rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .department-name {
+        font-size: 1.2rem;
+    }
+
+    .department-details {
+        font-size: 0.9rem;
+    }
+
+    .table thead th {
+        font-size: 0.9rem;
+        padding: 10px;
+    }
+
+    .table tbody td {
+        font-size: 0.9rem;
+        padding: 10px;
+    }
+}
+
+/* Add horizontal scroll for small screens */
+.table-responsive {
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+</style>
+
+{% endblock %} 

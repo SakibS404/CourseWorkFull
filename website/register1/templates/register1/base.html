@@ -1,0 +1,378 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <!--html code to set the character encoding standard-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!--html code to set title for website using blocks which can be overridden by child templates -->
+    <title>{% block title %}Create Account{% endblock %}</title>
+
+    <!--html code to implement bootstrap framework -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+    {% block extra_head %}{% endblock %}
+
+    <style type="text/css">
+
+    
+
+        /* css code for thin styling bar at the very top of page */
+        /* bar is intended for decorative purposes and has a gradient color scheme to match the sky website */
+
+        .decorationBarTop {
+            position: fixed;
+            top: 0;          
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, #ee8712, #f00c0c, #ee12c9, #3312ee);
+            z-index: 100;
+         }
+
+
+        /* css code for styling navigation bar */
+        /* bar is intended to be directly below decorationBarTop and is white in colour */
+
+
+        .navbar {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            width: 100%;
+            height: 50px;
+            gap: 4px;
+            position: fixed;
+            z-index: 99;
+            top: 3px;
+            left: 0;
+            right: 0;
+            background-color: #ffffff;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            
+            
+        }
+
+        /* css code for styling navigation bar links */
+        /* each link is grey in colour */
+
+        .navbar a {
+            padding: 8px 16px;
+            text-align: left;
+            text-decoration: none;
+            color:rgb(74, 74, 74);
+            font-size: 15px;
+            transition: all 0.2s ease;
+        }
+
+
+        /* css code for styling hover effect of navigation bar links */
+        /* each link is grey in colour and show an underline hover effect */
+
+        .navbar a:hover {
+            text-decoration: underline;
+            color: rgb(74, 74, 74);
+            
+        }
+
+        /* css code for sky logo placed on the left most handside of the navigation bar  */
+
+        .logo {
+                height: 25px; 
+                width: auto;
+                position: relative; 
+                top: -3px;
+        }
+
+
+        /* css code for styling bar at the bottom of navigation bar  */
+        /* bar is intended for decorative purposes and has a gradient color scheme to match the sky website. 
+        It is intended to be much thicker in size than the decorationBarTop */
+
+        .decorationBarBottom {
+            display: flex;
+            justify-content: flex-start;
+            width: 100%;
+            height: 50px;
+            top: 50px;
+            gap: 0px;
+            position: fixed;
+            z-index: 98;
+            left: 0; 
+            padding: 10px;
+            overflow: hidden;
+            background: linear-gradient(to right, #ee8712, #f00c0c, #ee12c9, #3312ee);
+
+        }
+
+
+        /*  container for footer links and text. It is white in color and site directly above the decorationBarFoot */
+       
+
+
+        .footerContainer {
+            position: fixed;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            padding: 8px 50px;
+            background: white;
+            text-align: left;
+            border-top: 1px solid #ccc;
+            color: #333;
+            font-size: 15px;
+            
+            z-index: 10;
+        }
+
+        
+
+        /* css code for thin styling bar at the very bottom of page */
+        /* bar is intended for decorative purposes and has a gradient color scheme to match the sky website 
+        it matches in size with decorationBarTop*/
+
+        .decorationBarFoot {
+            position: fixed;
+            bottom: 0;        
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, #ee8712, #f00c0c, #ee12c9, #3312ee);
+            z-index: 100;
+         }
+
+        .ml-auto {
+            margin-left: auto !important;
+        }
+
+        .navbar-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Add this new gradient style for box headers */
+        .gradient-header {
+            background: linear-gradient(to right, #ee8712, #f00c0c, #ee12c9, #3312ee);
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        .gradient-header h2,
+        .gradient-header h3,
+        .gradient-header h4 {
+            margin: 0;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        /* Style for the container boxes */
+        .content-box {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 120px;
+        }
+
+        .content-box .box-content {
+            padding: 20px;
+        }
+
+        /* Make sure all headers inside content boxes use the gradient */
+        .content-box h1,
+        .content-box h2,
+        .content-box h3,
+        .content-box h4,
+        .content-box h5,
+        .content-box h6 {
+            margin: 0;
+        }
+
+        /* Style for form containers */
+        .form-container {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .form-container .gradient-header {
+            margin-bottom: 20px;
+        }
+
+        .form-container .form-content {
+            padding: 20px;
+        }
+
+        /* Table container styling */
+        .table-container {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .table-container .gradient-header {
+            margin-bottom: 0;
+        }
+
+        .table-container .table {
+            margin-bottom: 0;
+        }
+
+        /* Card styling */
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .card .gradient-header {
+            margin-bottom: 0;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* Top decoration bar */
+        .top-decoration-bar {
+            position: fixed;  /* Changed from absolute to fixed */
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;  /* Reduced height to be less intrusive */
+            background: linear-gradient(to right, #ee8712, #f00c0c, #ee12c9, #3312ee);
+            z-index: 1000;  /* Ensure it stays on top */
+        }
+
+        /* Bottom decoration bar */
+        .bottom-decoration-bar {
+            position: fixed;  /* Changed from absolute to fixed */
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 5px;  /* Reduced height to be less intrusive */
+            background: linear-gradient(to right, #ee8712, #f00c0c, #ee12c9, #3312ee);
+            z-index: 1000;  /* Ensure it stays on top */
+        }
+
+        /* Add padding to body to prevent content from being hidden under bars */
+        body {
+            padding-top: 5px;    /* Match the top bar height */
+            padding-bottom: 5px; /* Match the bottom bar height */
+            min-height: 100vh;   /* Ensure full viewport height */
+            position: relative;  /* For proper positioning context */
+        }
+
+        /* Ensure content container doesn't overlap with bars */
+        .content-container {
+            position: relative;
+            z-index: 1;  /* Lower than the bars but above other content */
+            margin: 5px 0;  /* Add margin to prevent overlap */
+        }
+
+    </style>
+
+    <!-- Add before </head> -->
+    <script>
+        function safeJSONParse(str) {
+            try {
+                return JSON.parse(str);
+            } catch (e) {
+                return {};
+            }
+        }
+    </script>
+</head>
+
+<body>
+    
+    
+    <!--html code to enable use of static -->
+
+
+
+    <!--html code to implement the content of the navigation bar -->
+
+<div class="navbar">
+    <img src="{% static 'register1/images/sky.png' %}" alt="Sky Logo" class="logo">
+    {% if user.is_authenticated %}
+        {% with team=user.team_memberships.first %}
+            {% if team %}
+                <a href="{% url 'vote' %}">Vote</a>
+                <a href="{% url 'health_check' %}">Health Check</a>
+                <a href="{% url 'team_overview' %}">Team</a>
+                {% if user.person.job_title in 'admin,senior_manager,department_leader' %}
+                    <a href="{% url 'department_list' %}">Departments</a>
+                {% endif %}
+            {% endif %}
+            <div class="navbar-right">
+                <a href="{% url 'profile' %}">Settings</a>
+                <a href="{% url 'logout' %}">Logout</a>
+            </div>
+        {% endwith %}
+    {% else %}
+        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'register' %}">Register</a>
+    {% endif %}
+</div>
+
+
+
+<!--html code to implement decoration bars: top,bottom and foot -->
+
+<div class="decorationBarTop"></div>
+<div class="decorationBarBottom"></div>
+<div class="decorationBarFoot"></div>
+
+
+<!--html code to implement layout of page, margins and centering -->
+
+<div style="margin-top: 140px;"></div>
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-6 col-sm-8 col-10">
+            
+            <hr class="mt-0 mb-4">
+            {% block content %}{% endblock %}  <!--html code allowing content to be overwritten by child templates-->
+
+        </div>
+    </div>
+
+</div>
+
+
+<!--html code to import bootstrap libraries-->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"></script>
+
+
+<!--html code to implement footer container-->
+    <div class="footerContainer">
+        <p>&copy; 2025 CW2 project</p>
+    </div>
+    
+    
+
+</body>
+
+
+
+
+</html>

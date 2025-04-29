@@ -1,0 +1,72 @@
+{% extends 'register1/base.html' %}
+
+{% block title %}Engineer Home{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="glass-card p-4">
+                <h1 class="text-center mb-4">Welcome, {{ user.first_name }}!</h1>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <a href="{% url 'vote' %}" class="glass-button">
+                            Submit Weekly Team Health Assessment
+                        </a>
+                    </div>
+                    <div class="feature-item">
+                        <a href="{% url 'team_overview' %}" class="glass-button">
+                            View Team Overview
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.feature-item {
+    transition: transform 0.2s;
+}
+
+.feature-item:hover {
+    transform: translateY(-2px);
+}
+
+.glass-button {
+    display: block;
+    padding: 1.25rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: all 0.3s;
+    text-align: center;
+}
+
+.glass-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: var(--text-color);
+    text-decoration: none;
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+</style>
+{% endblock %}

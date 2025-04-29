@@ -1,0 +1,364 @@
+{% extends "register1/base.html" %}
+{% load static %}
+
+{% block title %}Vote - Health Check{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Card and Layout Styles */
+    .fixed-height-card {
+        height: 70vh;
+        display: flex;
+        flex-direction: column;
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Add gradient header to card */
+    .card-header {
+        background: linear-gradient(to right, #ee8712, #f00c0c, #ee12c9, #3312ee);
+        color: white;
+        padding: 1.5rem;
+        border: none;
+    }
+
+    .card-header h4 {
+        margin: 0;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .card-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 2.5rem;
+        background: white;
+    }
+
+    /* Vote buttons - adjusted to appropriate size */
+    .vote-btn {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: normal;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin: 5px 0;
+    }
+
+    /* Green button - using exact color */
+    .green-btn {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .green-btn:hover {
+        background-color: #218838;
+    }
+
+    /* Amber button - using exact color */
+    .amber-btn {
+        background-color: #ffc107;
+        color: white;
+    }
+
+    .amber-btn:hover {
+        background-color: #e0a800;
+    }
+
+    /* Red button - using exact color */
+    .red-btn {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .red-btn:hover {
+        background-color: #c82333;
+    }
+
+    .vote-btn.selected {
+        transform: scale(0.98);
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Category heading with gradient text */
+    .category-heading {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(to right, #ee8712, #f00c0c, #ee12c9, #3312ee);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .category-question {
+        color: #2c3e50;
+        font-size: 1.1rem;
+        font-weight: 500;
+        margin-bottom: 2rem;
+    }
+
+    /* Navigation Buttons */
+    .nav-btn {
+        padding: 0.75rem 2rem;
+        font-size: 1.1rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        background-color: #6c757d;
+        color: white;
+        border: none;
+    }
+
+    .nav-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .nav-btn:not(:disabled):hover {
+        background-color: #5a6268;
+        transform: translateY(-2px);
+    }
+
+    /* Keep your existing styles for loading, error states, and animations */
+    #loadingSpinner {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1000;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 2rem;
+        border-radius: 1rem;
+    }
+
+    #errorAlert {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        min-width: 300px;
+    }
+
+    /* Enhanced submit button with gradient */
+    .submit-btn {
+        background: linear-gradient(to right, #ee8712, #f00c0c, #ee12c9, #3312ee);
+        color: white;
+        border: none;
+        padding: 16px 48px;
+        border-radius: 8px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 2rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .submit-btn:active {
+        transform: translateY(-1px);
+    }
+
+    @media (max-width: 768px) {
+        .vote-btn {
+            padding: 10px 16px;
+            font-size: 0.9rem;
+        }
+
+        .submit-btn {
+            padding: 12px 36px;
+            font-size: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<form id="voteForm">
+    {% csrf_token %}
+    <div class="container py-4">
+        {% if vote_message %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            {{ vote_message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+        {% if vote_categories %}
+        <div id="voteCarousel" class="carousel slide" data-ride="false" data-interval="false">
+            <div class="carousel-inner">
+                {% for category in vote_categories %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <div class="card fixed-height-card">
+                        <div class="card-header">
+                            <h4>Health Check Voting</h4>
+                        </div>
+                        <div class="card-body">
+                            <h2 class="category-heading">{{ category.display_name }}</h2>
+                            <p class="category-question">How would you rate {{ category.question }}?</p>
+                            
+                            <div class="vote-buttons">
+                                <button type="button" class="vote-btn green-btn" onclick="handleVote('Green', '{{ category.name }}')">
+                                    Green
+                                </button>
+                                <button type="button" class="vote-btn amber-btn" onclick="handleVote('Amber', '{{ category.name }}')">
+                                    Amber
+                                </button>
+                                <button type="button" class="vote-btn red-btn" onclick="handleVote('Red', '{{ category.name }}')">
+                                    Red
+                                </button>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-4">
+                                <button type="button" class="btn btn-secondary" {% if forloop.first %}disabled{% endif %} onclick="$('#voteCarousel').carousel('prev')">
+                                    Previous
+                                </button>
+                                {% if forloop.last %}
+                                <button type="button" class="btn btn-primary" onclick="submitVotes()">
+                                    Submit
+                                </button>
+                                {% else %}
+                                <button type="button" class="btn btn-secondary" onclick="$('#voteCarousel').carousel('next')">
+                                    Next
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-warning">
+            No voting categories are available at this time.
+        </div>
+        {% endif %}
+    </div>
+</form>
+
+<!-- Error Alert -->
+<div id="errorAlert" class="alert alert-danger alert-dismissible fade show" role="alert" style="display: none;">
+    <span id="errorMessage"></span>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<!-- Loading Spinner -->
+<div id="loadingSpinner" style="display: none;">
+    <div class="d-flex align-items-center">
+        <div class="spinner-border text-primary mr-3" role="status"></div>
+        <span>Submitting your responses...</span>
+    </div>
+</div>
+
+<!-- Success Message -->
+<div id="successContainer" class="container text-center py-5" style="display: none;">
+    <h2 class="mb-4">Thank you for your feedback!</h2>
+    <p class="lead mb-5">Your responses have been successfully recorded.</p>
+    <button onclick="window.location.reload()" class="btn btn-primary">Submit Another Vote</button>
+</div>
+
+<script>
+let votes = {};
+
+function handleVote(value, category) {
+    // Store the vote
+    votes[category] = value;
+    
+    // Visual feedback - highlight selected button
+    const activeItem = document.querySelector('.carousel-item.active');
+    activeItem.querySelectorAll('.vote-btn').forEach(btn => {
+        btn.classList.remove('selected');
+        if (btn.textContent.trim() === value) {
+            btn.classList.add('selected');
+        }
+    });
+    
+    // Auto-advance to next question if not the last one
+    const nextButton = activeItem.querySelector('.btn-secondary:not(:disabled)');
+    if (nextButton && nextButton.textContent.trim() === 'Next') {
+        setTimeout(() => {
+            $('#voteCarousel').carousel('next');
+        }, 300);
+    }
+}
+
+function submitVotes() {
+    // Show loading spinner
+    document.getElementById('loadingSpinner').style.display = 'block';
+    
+    // Get CSRF token
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    
+    // Format votes for submission
+    const formattedVotes = [];
+    for (const [category, value] of Object.entries(votes)) {
+        formattedVotes.push({
+            category: category,
+            vote: value
+        });
+    }
+    
+    // Submit votes
+    fetch('/vote/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify({ votes: formattedVotes })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Show success message
+            document.getElementById('voteCarousel').style.display = 'none';
+            document.getElementById('successContainer').style.display = 'block';
+            if (data.redirect_url) {
+                setTimeout(() => {
+                    window.location.href = data.redirect_url;
+                }, 2000);
+            }
+        } else {
+            throw new Error(data.message || 'Failed to submit votes');
+        }
+    })
+    .catch(error => {
+        // Show error message
+        document.getElementById('errorMessage').textContent = error.message;
+        document.getElementById('errorAlert').style.display = 'block';
+    })
+    .finally(() => {
+        // Hide loading spinner
+        document.getElementById('loadingSpinner').style.display = 'none';
+    });
+}
+
+// Initialize carousel
+$(document).ready(function() {
+    $('#voteCarousel').carousel({
+        interval: false,
+        wrap: false
+    });
+});
+</script>
+{% endblock %} 
