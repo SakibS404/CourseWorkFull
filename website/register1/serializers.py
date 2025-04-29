@@ -104,7 +104,7 @@ class TeamSerializer(serializers.ModelSerializer, VoteSummaryMixin):
         fields = ['id', 'member_count', 'vote_summary', 'department', 'user']
 
     def get_member_count(self, obj):
-        return 1  # Since each team record represents one user
+        return 1  
 
     def get_vote_summary(self, obj):
         team_votes = Vote.objects.filter(user=obj.user)

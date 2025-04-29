@@ -18,6 +18,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
     {% block extra_head %}{% endblock %}
+    {% load static %}
+
 
     <style type="text/css">
 
@@ -311,7 +313,8 @@
     <!--html code to implement the content of the navigation bar -->
 
 <div class="navbar">
-    <img src="{% static 'register1/images/sky.png' %}" alt="Sky Logo" class="logo">
+    <img src="{% static 'image/sky_logo.png' %}" alt="Sky Logo" class="logo">
+
     {% if user.is_authenticated %}
         {% with team=user.team_memberships.first %}
             {% if team %}

@@ -1,8 +1,8 @@
-from django.contrib import admin  # this block of code is to import the admin class
-from .models import Person, Department, Team, Vote # this block of code is to import the  person model into the admin class
+from django.contrib import admin  
+from .models import Person, Department, Team, Vote 
 
 
-# this block of code is used to place the persons model within the admin page, holds all databases for this project
+
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
     list_display = ('name', 'description', 'created_at')

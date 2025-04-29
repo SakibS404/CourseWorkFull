@@ -152,15 +152,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 
-###############################################################################
-#Reference:
-#Tech With Tim (2019). Django Tutorial - User Registration & Sign Up Page. 
-#[online] YouTube. 
-#Available at: https://www.youtube.com/watch?v=Ev5xgwndmfc 
-#[Accessed 20 Apr. 2025]
-#
-############################################################################
-
 # REST Framework settings
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [

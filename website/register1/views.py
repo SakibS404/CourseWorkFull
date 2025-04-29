@@ -18,7 +18,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 
 
 
-#creates a view function for register1 app, to handle http request and response 
+#  view function 
 def register(request):
     """Handle user registration with department assignment."""
     if request.method == 'POST':
@@ -47,7 +47,7 @@ def user_login(request):
             identifier = form.cleaned_data['identifier']
             password = form.cleaned_data['password']
             
-            # Try username first, then email
+            
             user = authenticate(request, username=identifier, password=password)
             if not user:
                 try:
@@ -134,7 +134,7 @@ def profile(request):
                     messages.error(request, 'Username already exists.')
                     return redirect('profile')
                 user.username = username
-                # Update Person model username as well
+                # Update Person model username 
                 try:
                     person = Person.objects.get(user=user)
                     person.username = username
@@ -244,7 +244,7 @@ def vote(request):
             today = timezone.now().date()
             Vote.objects.filter(user=request.user, timestamp__date=today).delete()
             
-            # Create a new vote object with all categories
+            # Create a new vote object 
             vote_data_dict = {vote['category']: vote['vote'].capitalize() for vote in votes}
             
             new_vote = Vote(
@@ -300,13 +300,13 @@ def health_check(request):
             }
             return render(request, 'register1/health_check.html', context)
         
-        # Get votes for today from users in the same team
+        
         today_votes = Vote.objects.filter(
             timestamp__date=today,
             team_name=team.name
         ).select_related('user')
         
-        # Initialize vote statistics
+        
         vote_stats = {}
         for category in categories:
             votes = [getattr(vote, category) for vote in today_votes if getattr(vote, category)]
@@ -329,7 +329,7 @@ def health_check(request):
                     'total_votes': 0
                 }
         
-        # Convert vote_stats to JSON in a way that's safe for JavaScript
+        
         vote_stats_json = json.dumps(vote_stats)
         
         context = {
@@ -391,8 +391,8 @@ def submit_votes(request):
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
     
-    # Define vote_categories here or redirect to vote view
-    return redirect('vote')  # Changed to redirect instead of render
+    
+    return redirect('vote')  
 
 def root_redirect(request):
     """Redirect root URL to appropriate page based on authentication status."""
@@ -416,22 +416,6 @@ def root_redirect(request):
 
 
         
-###############################################################################
-#
-# Reference:
-#
-# Simple UE is better then complex (2020). Extend User in Django part 2: Token Auth. 
-# [online] YouTube. 
-# Available at: https://www.youtube.com/watch?v=HDiMliULC18 [Accessed 25 Apr. 2025].
-#
-#
-#
-# Tech With Tim (2019). Django Tutorial - User Registration & Sign Up Page. 
-# [online] YouTube. 
-# Available at: https://www.youtube.com/watch?v=Ev5xgwndmfc 
-# [Accessed 20 Apr. 2025]
-#
-############################################################################
- 
+
     
     

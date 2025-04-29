@@ -9,11 +9,3 @@ urlpatterns = [
     path('', include('register1.urls')),  # Include register1 URLs
 ]
 
-###############################################################################
-#Reference:
-#Tech With Tim (2019). Django Tutorial - User Registration & Sign Up Page. 
-#[online] YouTube. 
-#Available at: https://www.youtube.com/watch?v=Ev5xgwndmfc 
-#[Accessed 20 Apr. 2025]
-#
-############################################################################

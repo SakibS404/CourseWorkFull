@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # Root URL pattern
+    
     path('', views.root_redirect, name='root'),
     
     # Authentication URLs
@@ -10,7 +10,7 @@ urlpatterns = [
     path('login/', views.user_login, name='login'),
     path('logout/', views.user_logout, name='logout'),
     
-    # Role-based dashboard URLs
+    # dashboard URLs
     path('engineer_home/', views.engineer_home, name='engineer_home'),
     path('team_leader_home/', views.team_leader_home, name='team_leader_home'),
     path('department_leader_home/', views.department_leader_home, name='department_leader_home'),
@@ -20,7 +20,7 @@ urlpatterns = [
     # Profile management
     path('profile/', views.profile, name='profile'),
     
-    # Application specific URLs
+    #  URLs
     path('vote/submit/', views.submit_votes, name='submit_votes'),
     path('vote/', views.vote, name='vote'),
     path('teams/', views.team_overview, name='team_overview'),
