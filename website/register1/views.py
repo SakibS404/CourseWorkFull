@@ -363,7 +363,7 @@ def submit_votes(request):
             Vote.objects.filter(user=request.user, timestamp__date=today).delete()
             
             # Create a new vote object with all categories
-            vote_data_dict = {vote['category']: vote['vote'].capitalize() for vote in votes}  # Store "Green", "Amber", "Red"
+            vote_data_dict = {vote['category']: vote['vote'].capitalize() for vote in votes}  
             
             new_vote = Vote(
                 user=request.user,
