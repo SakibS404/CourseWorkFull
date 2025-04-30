@@ -317,6 +317,17 @@
 
     {% if user.is_authenticated %}
         {% with team=user.team_memberships.first %}
+            {% if user.person.job_title == 'admin' %}
+                <a href="{% url 'admin_home' %}">Home</a>
+            {% elif user.person.job_title == 'senior_manager' %}
+                <a href="{% url 'senior_manager_home' %}">Home</a>
+            {% elif user.person.job_title == 'department_leader' %}
+                <a href="{% url 'department_leader_home' %}">Home</a>
+            {% elif user.person.job_title == 'team_leader' %}
+                <a href="{% url 'team_leader_home' %}">Home</a>
+            {% else %}
+                <a href="{% url 'engineer_home' %}">Home</a>
+            {% endif %}
             {% if team %}
                 <a href="{% url 'vote' %}">Vote</a>
                 <a href="{% url 'health_check' %}">Health Check</a>
